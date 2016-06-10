@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<div class="container" style="margin-top: 200px">
+    <center>
+        <h2>Search!</h2>
+    </center>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="input-group" id="adv-search">
+                <form data-bind="submit: getLemmas">
+                    <input data-bind="value: searchWord" type="text" class="form-control" placeholder="Give me a searchword!" />
+                </form>
+                <div class="input-group-btn">
+                    <div class="btn-group" role="group">
+                        <div class="dropdown dropdown-lg">
+
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <form class="form-horizontal" role="form" style="max-width: 250px">
+                                    <div class="form-group">
+                                        <label for="filter">Filter by </label>&nbsp;&nbsp;
+                                        <select class="form-control" style="max-width: 200px" data-bind="options: indexes,
+                                                 value: selectedIndex,
+                                                 optionsCaption: 'Choose Index...'"></select>
+                                        <input data-bind="value: searchInBooks" placeholder="Search in..." type="text" />
+                                    </div>
+                                    <button type="button" class="btn btn-primary" data-bind="click: getLemmas"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </form>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<head>
+    <title>Bootstrap Case</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+
+    <div class="h3" data-bind="if: suggestions().length > 0">
+        Mente du:
+        <div data-bind="foreach: suggestions">
+            <a data-bind="click: $root.searchSuggestion.bind($data), text: $data"></a><span>,</span>
+        </div>
+    </div>
+
+    <br />
+
+    <div class="container">
+        <h2>Resultater</h2>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#home">
+                    Lemma & Entries
+                    <!--ko if: totalHits() > 0-->
+                    <span class="badge" data-bind="text: totalHits"></span>
+                    <!--/ko-->
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#synonym">
+                    Synonyms
+                    <!-- ko if: anySynonyms-->
+                    <div class="badge">!</div>
+                    <!--/ko-->
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#startsWith">
+                    Starts with
+                    <div class="badge" data-bind="if: anyStartsWith ">!</div>
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#endsWith">
+                    Ends with
+                    <div class="badge" data-bind="if: anyEndsWith">!</div>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="home" class="tab-pane fade in active">
+                <div align="center">
+                    <table class="table table-striped" style="width: 49%; display: inline-block; vertical-align: top">
+                        <caption style="font-size: x-large">Lemmas: <span data-bind="text: lemmas().length"></span></caption>
+                        <thead>
+                            <tr>
+                                <th>Language</th>
+                                <th>Id</th>
+                                <th>Ortography</th>
+                                <th>CompactPresentation</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: lemmas">
+                            <tr>
+                                <td><h4><text data-bind="text: LemmaLanguage" /></h4></td>
+                                <td><h4><text data-bind="text: LemmaId" /></h4></td>
+                                <td><h4><text data-bind="text: LemmaOrtography" /></h4></td>
+                                <td><h4><text data-bind="text: LemmaInflection.CompactPresentation" /></h4></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-striped" style="width: 49%; display: inline-block; vertical-align: top">
+                        <caption style="font-size: x-large">Entries: <span data-bind="text: entries().length"></span></caption>
+                        <thead>
+                            <tr>
+                                <th>IdBook</th>
+                                <th>IdEntry</th>
+                                <th>IdLemma</th>
+                                <th>HeadWord</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: entries">
+                            <tr>
+                                <td><h4><text data-bind="text: IdBook" /></h4></td>
+                                <td><h4><text data-bind="text: IdEntry" /></h4></td>
+                                <td class="parent">
+                                    <div>
+                                        IdPos: <text data-bind="text: EntryIdLemma.IdLemmaPos" />
+                                    </div>
+                                    <div>
+                                        IdRef: <text data-bind="text: EntryIdLemma.IdLemmaRef" />
+                                    </div>
+                                    <div>
+                                        IdDescriptionRef: <text data-bind="text: EntryIdLemma.IdLemmaDescriptionRef" />
+                                    </div>
+                                    <div>
+                                        LemmaIdRef: <text data-bind="text: EntryIdLemma.LemmaIdRef" />
+                                    </div>
+                                </td>
+                                <td><h4><text data-bind="text: HeadWord" /></h4></td>
+                                <td><h4><text data-bind="text: HeadPosShortNameGyl" /></h4></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div align="center">
+                    @*set text to showmore + lemmas.length(), totalHits*@
+                    <button type="button" data-bind="click: showMore" class="btn btn-info">Show More <span data-bind="text: lemmas().length + ' / ' + totalHits() +'   '"></span><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </div>
+            </div>
+
+
+
+            <div id="synonym" class="tab-pane fade">
+                <h3>Synonyms</h3>
+                <table class="table table-striped">
+                    <!-- ko foreach: orthAndAccessData-->
+                    <!-- ko if: SynonymsTo.length-->
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>
+                                    <text data-bind="text: WordOtrhography" />
+                                </h3>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: SynonymsTo">
+                        <tr>
+                            <td><h5><text data-bind="text: $data" /></h5></td>
+                        </tr>
+                    </tbody>
+                    <!-- /ko-->
+                    <!-- /ko-->
+                </table>
+            </div>
+
+            <div id="startsWith" class="tab-pane fade">
+                <h3>Starts With</h3>
+                <table class="table table-striped">
+                    <!-- ko foreach: orthAndAccessData-->
+                    <!-- ko if: StartsWith.length-->
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>
+                                    <text data-bind="text: WordOtrhography" />
+                                </h3>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: StartsWith">
+                        <tr>
+                            <td><h5><text data-bind="text: $data" /></h5></td>
+                        </tr>
+                    </tbody>
+                    <!-- /ko-->
+                    <!-- /ko-->
+                </table>
+            </div>
+
+            <div id="endsWith" class="tab-pane fade">
+                <h3>Ends with</h3>
+                <table class="table table-striped">
+                    <!-- ko foreach: orthAndAccessData-->
+                    <!-- ko if: EndsWith.length-->
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>
+                                    <text data-bind="text: WordOtrhography" />
+                                </h3>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: EndsWith">
+                        <tr>
+                            <td><h5><text data-bind="text: $data" /></h5></td>
+                        </tr>
+                    </tbody>
+                    <!-- /ko-->
+                    <!-- /ko-->
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section Scripts{
+    <script type='text/javascript' src="@Url.Content("/Scripts/knockout-3.4.0.js")"></script>
+    <script type='text/javascript' src="@Url.Content("/Scripts/bootstrap.js")"></script>
+    <script type='text/javascript' src="@Url.Content("/Scripts/ViewScripts/Search.js")"></script>
+}
