@@ -64,17 +64,13 @@ namespace Elastico
                                     )
                                 )
                    )
-
                    ||
-
                     q.Bool(b1 => b1
                         .Filter(fi => fi
                             .Term(ma => ma.LemmaOrtography, searchword)
                         )
                     )
                 )
-
-
             );
             return response;
         }
@@ -268,11 +264,10 @@ namespace Elastico
                 .Query(q1 => q1
                    .Bool(b => b
                         .Filter(f => f.Match(m => m.Field(fi => fi.IdBook).Query(books)))
-                        .Must(mu =>
-                            mu.Match(ma => ma.Field(fi => fi.HeadWordExact).Query(searchword))
-                               &&
-                            mu.Term(ma => ma.PrioritizeWhenLemma.PrioritizeLemmaIfRef, null)
-
+                        .Must(m => 
+                            m.Match(ma => ma.Field(fi => fi.HeadWordExact).Query(searchword)) 
+                            &&
+                            m.Term(t=>t.PrioritizeWhenLemma.Count, 1)
                         )
                    )
                 ));

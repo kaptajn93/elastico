@@ -138,22 +138,16 @@ namespace Elastico.test
             }
         }
 
-
-
-        [Theory]
-        //in da
+       
+      [Theory]
         [InlineData("reconversión industrial", "0", "sp", "spda-mini")]
         [InlineData("recopilar", "0", "sp", "spda-mini")]
-        public void CanFindHeadWordWithTPrioritizeLemma(string searchword, int from, string index, string searchInBooks)
+        public void TestPrioritizeLemma(string searchword, int from, string index, string searchInBooks)
         {
             var response1 = _manager.EntrySearchByHeadWordExactAndPrioritizeWhenLemma(searchword, from, index, searchInBooks);
             var result1 = response1?.Hits?.FirstOrDefault();
             Assert.Equal(result1?.Source?.HeadWord, searchword);
         }
-    
-
-
-
 
 
 

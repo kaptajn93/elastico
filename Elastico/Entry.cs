@@ -14,7 +14,7 @@ namespace Elastico
         public EntryIdLemma EntryIdLemma { get; set; }
         // /id
         public bool Unbound { get; set; }
-        public PrioritizeWhenLemma PrioritizeWhenLemma { get; set; }
+        public IList<PrioritizeWhenLemma> PrioritizeWhenLemma { get; set; }
         //head
         public string HeadWord { get; set; }
         public string HeadWordExact { get; set; }
